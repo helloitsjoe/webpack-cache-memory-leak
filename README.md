@@ -41,6 +41,15 @@ I'm not sure this is the only place these are being cached, and this may not be 
 
 </details>
 
+I alsop noticed the number of instances of most of the `Source` classes have many more new than deleted when comparing to a previous snapshot:
+
+<details open>
+  <summary>Sources after 5 recompilations</summary>
+  
+  <img width="1707" alt="Sources" src="https://github.com/helloitsjoe/webpack-cache-memory-leak/assets/8823810/820155a6-8678-4e61-bec1-c0d56a86bd3c">
+
+</details>
+
 ## The Fix
 
 :grimacing:
