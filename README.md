@@ -20,7 +20,7 @@ This repo uses a custom loader to render React components to HTML during the bui
 
 Here's where this is different from https://github.com/helloitsjoe/webpack-memory-leak:
 
-Find and open the `(string)` constructor in the snapshot diff, it should be the first or second item when sorting by retained size or size delta. You should see multiple copies of the same strings, including source files (`react` and `react-dom`) used in `src/react-loader.js`, and this string from `EvalDevToolPlugin`:
+Find and open the `(string)` constructor in the snapshot diff, it should be the first or second item when sorting by retained size or size delta. You should see multiple copies of the same strings, including source files (`react` and `react-dom`) used in `src/react-loader.js`, and this string from `EvalDevToolModulePlugin`:
 
 ```
 /* * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development") ...
