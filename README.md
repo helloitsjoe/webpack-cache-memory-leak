@@ -37,6 +37,8 @@ I'm not sure this is the only place these are being cached, and this may not be 
 <details open>
   <summary>Duplicated strings after 5 recompilations</summary>
   
+  <img width="1707" alt="strings" src="https://github.com/helloitsjoe/webpack-cache-memory-leak/assets/8823810/499fb875-7067-406f-b09b-d733ad1889ff">
+
 </details>
 
 ## The Fix
