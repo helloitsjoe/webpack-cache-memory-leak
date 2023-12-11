@@ -41,7 +41,7 @@ I'm not sure this is the only place these are being cached, and this may not be 
 
 </details>
 
-I alsop noticed the number of instances of most of the `Source` classes have many more new than deleted when comparing to a previous snapshot:
+I also noticed the number of instances of most of the `Source` classes have many more new than deleted when comparing to a previous snapshot:
 
 <details open>
   <summary>Sources after 5 recompilations</summary>
