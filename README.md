@@ -1,12 +1,14 @@
 # Webpack Cache Memory Leak
 
-This is a basic Webpack setup to reproduce the memory leak described in this Webpack issue: TODO
+This is a basic Webpack setup to reproduce the memory leak described in this Webpack issue: https://github.com/webpack/webpack/issues/17857
 
 NOTE: This is similar to https://github.com/helloitsjoe/webpack-memory-leak. It looks like a different root cause and different effect, but seems to stem from not cleaning up after child compilers.
 
 ## Summary
 
 This repo uses a custom loader to render React components to HTML during the build. The libraries used during that process (`react` and `react-dom`) are stored in cache and never cleaned up, leaking a few MB on each compilation in watch mode. Similar to https://github.com/helloitsjoe/webpack-memory-leak, `HtmlWebpackPlugin` creates a child compiler so it's useful in this reproduction, but the leak itself seems to be in Webpack.
+
+_Note: duplicate strings are retained in memory even without the custom loader, the loader just makes it more obvious._
 
 ## How to reproduce
 
