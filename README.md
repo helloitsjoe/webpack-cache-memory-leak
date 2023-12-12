@@ -8,7 +8,7 @@ NOTE: This is similar to https://github.com/helloitsjoe/webpack-memory-leak. It 
 
 This repo uses a custom loader to render React components to HTML during the build. The libraries used during that process (`react` and `react-dom`) are stored in cache and never cleaned up, leaking a few MB on each compilation in watch mode. Similar to https://github.com/helloitsjoe/webpack-memory-leak, `HtmlWebpackPlugin` creates a child compiler so it's useful in this reproduction, but the leak itself seems to be in Webpack.
 
-_Note: duplicate strings are retained in memory even without the custom loader, the loader just makes it more obvious._
+_Note: duplicate strings are retained in memory even without the custom loader, the loader just makes it more obvious._ See the simplified branch for vanilla HtmlWebpackPlugin usage.
 
 ## How to reproduce
 
