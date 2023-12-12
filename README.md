@@ -1,14 +1,12 @@
 # Webpack Cache Memory Leak
 
-This is a basic Webpack setup to reproduce the memory leak described in this Webpack issue: https://github.com/webpack/webpack/issues/17857
+This is a basic Webpack setup to reproduce the memory leak described in ~this Webpack issue: https://github.com/webpack/webpack/issues/17857~ After further investigation I think the root cause is in `HtmlWebpackPlugin`: https://github.com/jantimon/html-webpack-plugin/issues/1835
 
 NOTE: This is similar to https://github.com/helloitsjoe/webpack-memory-leak. It looks like a different root cause and different effect, but seems to stem from not cleaning up after child compilers.
 
 ## Summary
 
-This repo uses a custom loader to render React components to HTML during the build. The libraries used during that process (`react` and `react-dom`) are stored in cache and never cleaned up, leaking a few MB on each compilation in watch mode. Similar to https://github.com/helloitsjoe/webpack-memory-leak, `HtmlWebpackPlugin` creates a child compiler so it's useful in this reproduction, but the leak itself seems to be in Webpack.
-
-_Note: duplicate strings are retained in memory even without the custom loader, the loader just makes it more obvious._ See the [simplified branch](https://github.com/helloitsjoe/webpack-cache-memory-leak/tree/simplified) for vanilla HtmlWebpackPlugin usage.
+The [`simplified` branch](https://github.com/helloitsjoe/webpack-cache-memory-leak/tree/simplified) shows the leak with vanilla HtmlWebpackPlugin usage, but the main branch shows how much memory can leak in a use case closer to the real world, where a custom loader renders React components to HTML during the build. The libraries used during that process (`react` and `react-dom`) are stored in cache and never cleaned up, leaking a few MB on each compilation in watch mode. The leak seems to come from `HtmlWebpackPlugin` using a unique ID for each child compiler.
 
 ## How to reproduce
 
@@ -16,7 +14,7 @@ _Note: duplicate strings are retained in memory even without the custom loader, 
 2. Run `webpack serve` in inspect mode: `NODE_OPTIONS=--inspect $(yarn bin webpack) serve`
 3. Open a memory profiler, for example `chrome://inspect` in Chrome
 4. Take a heap snapshot
-5. Save `src/app.js`, which will cause `HtmlWebpackPlugin` to create a child compiler. Save a few times.
+5. Save `src/app.js` (or `src/index.html` on the `simplified` branch), which will cause `HtmlWebpackPlugin` to create a child compiler. Save a few times.
 6. Take a second heap snapshot and notice the difference in size
 7. Take a third snapshot and select `Objects allocated between snapshots 1 and 2`, or select `Comparison` view and compare snapshot 3 to 1.
 
@@ -34,7 +32,7 @@ A new copy of each of these is added every recompile. It looks to me like these 
 'HtmlWebpackCompiler|0|Compilation/codeGeneration|javascript/esm|data:text/javascript,__webpack_public_path__ = __webpack_base_uri__ = htmlWebpackPluginPublicPath;|HtmlWebpackPlugin_0-7'
 ```
 
-I'm not sure this is the only place these are being cached, and this may not be the root cause, but I can see that cache growing by a number of entries on each recompile.
+I'm not sure this is the only place these are being cached, but I can see that cache growing by a number of entries on each recompile.
 
 <details open>
   <summary>Duplicated strings after 5 recompilations</summary>
@@ -54,4 +52,4 @@ I also noticed the number of instances of most of the `Source` classes have many
 
 ## The Fix
 
-:grimacing:
+As mentioned in https://github.com/jantimon/html-webpack-plugin/issues/1835, it looks like it might be as simple as reverting [this commit](https://github.com/jantimon/html-webpack-plugin/commit/aa64b824606896ed01daf7e6da80429785ecd7bc). It doesn't look like that `id` is used anywhere else, so there shouldn't be any downstream effects. However, it's not clear to me why that change was made in the first place, so there may be something I'm not considering.
